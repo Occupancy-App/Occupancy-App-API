@@ -11,13 +11,13 @@ The front end is in a different cloudflare worker, this is the backend KV store.
 
 * Update Current KV data call -> spaceUpdateHandler
 
- * Used to update the current value + or - value or max value
+  * Used to update the current value + or - value or max value
 
- * returns space values
+  * returns space values
 
 * Create new KV store -> createSpace
 
- * used to create space and return space id number
+  * used to create space and return space id number
 
 * Get KV data call -> spaceReturnHandler
 

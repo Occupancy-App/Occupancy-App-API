@@ -1,0 +1,5 @@
+#!/bin/bash
+
+CURL=/usr/bin/curl
+
+${CURL} -X GET https://65f34f5dz4.execute-api.us-east-1.amazonaws.com/dev/space/$1

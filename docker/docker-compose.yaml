@@ -1,0 +1,8 @@
+version: '3'
+services:
+   endpoint:
+     build: endpoint/
+     env_file: endpoint/occupancy-api.env
+     ports: 
+       - "443:443"
+

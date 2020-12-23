@@ -3,17 +3,28 @@ import uuid
 import time
 import datetime
 import logging
+import redis
+import json
 
 
 class NewSpaceHandler(tornado.web.RequestHandler):
+
+    # Note -- should not override __init__, per 
+    #       https://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler
+    def initialize(self):
+        self._db_handle = redis.Redis( host='redis' )
+
+
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin",      "*")
         self.set_header("Access-Control-Allow-Headers",     "x-requested-with")
         self.set_header('Access-Control-Allow-Methods',     "GET, OPTIONS")
+
  
     def options(self, current_occupancy, max_occupancy ):
         self.set_status(204)
         self.finish()
+
 
     def _create_occupancy_response( self, space_id, space_name, current_occupancy, max_occupancy, 
             created_timestamp, last_updated_timestamp ):
@@ -31,7 +42,6 @@ class NewSpaceHandler(tornado.web.RequestHandler):
 
 
     def get( self, current_occupancy, max_occupancy, name_group, space_name ):
-
         current_occupancy = int( current_occupancy ) 
         max_occupancy = int( max_occupancy ) 
 
@@ -54,7 +64,24 @@ class NewSpaceHandler(tornado.web.RequestHandler):
 
             expiration_seconds_since_epoch = time.time() + ttl_seconds
 
-            # Write new key to Redis
+            formatted_output = self._create_occupancy_response( new_space_id, space_name, current_occupancy,
+                max_occupancy, now_timestamp, now_timestamp )
 
-            self.write( self._create_occupancy_response( new_space_id, space_name, current_occupancy, 
-                max_occupancy, now_timestamp, now_timestamp) )
+            # If persisting the output works, send it back to the client
+            if self._write_space_to_db( new_space_id, formatted_output ) is True:
+                self.write( formatted_output )
+            else:
+                self.set_status( 500, "Could not persist new space" )
+
+ 
+    def _write_space_to_db( self, space_id, space_info ):
+        try:
+            # can't write a raw UUID object, cast to a string
+            space_redis_key = str( space_id )
+
+            self._db_handle.set( space_redis_key, json.dumps(space_info) ) 
+            logging.debug("Successful write of JSON for space {0}".format(space_id) )
+            return True
+        except redis.RedisError as e:
+            logging.warn("Exception thrown writing JSON for space {0}: {1}".format(space_id, e) )
+            return False

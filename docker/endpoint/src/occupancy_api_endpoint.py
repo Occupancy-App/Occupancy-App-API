@@ -30,26 +30,13 @@ def _make_ssl_ctx():
     acceptable_cipher_suites = [
         "ECDHE-ECDSA-AES128-GCM-SHA256",
         "ECDHE-ECDSA-AES256-GCM-SHA384",
-        #"ECDHE-ECDSA-AES128-SHA",
-        #"ECDHE-ECDSA-AES256-SHA",
-        #"ECDHE-ECDSA-AES128-SHA256",
-        #"ECDHE-ECDSA-AES256-SHA384",
         "ECDHE-RSA-AES128-GCM-SHA256",
         "ECDHE-RSA-AES256-GCM-SHA384",
-        #"ECDHE-RSA-AES128-SHA",
-        #"ECDHE-RSA-AES256-SHA",
-        #"ECDHE-RSA-AES128-SHA256",
-        #"ECDHE-RSA-AES256-SHA384",
         "DHE-RSA-AES128-GCM-SHA256",
         "DHE-RSA-AES256-GCM-SHA384",
-        #"DHE-RSA-AES128-SHA",
-        #"DHE-RSA-AES256-SHA",
-        #"DHE-RSA-AES128-SHA256",
-        #"DHE-RSA-AES256-SHA256",
     ]
 
     ssl_ctx.set_ciphers( ":".join(acceptable_cipher_suites) )
-
     ssl_ctx.load_cert_chain( crt_file, key_file )
 
     return ssl_ctx

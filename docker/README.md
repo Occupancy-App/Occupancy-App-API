@@ -27,12 +27,10 @@ Key file written to `/etc/letsencrypt/live/[domain]/privkey.pem`
 
 Use [these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
 
-## Run
+## Build container
 
-*NOTE*: MUST be run as **root** 
+*NOTE*: MUST be run as a user able to run sudo *without a password*.
 
 ```shell
-# OCCUPANCY_ENDPOINT_CRTFILE=/path/to/fullchain.pem \
-  OCCUPANCY_ENDPOINT_KEYFILE=/path/to/privkey.pem   \
-  python3 occupancy_api_endpoint.py
+$ OCCUPANCY_CERT_DIR=[path to fullchain.pem and privkey.pem, e.g. "OCCUPANCY_CERT_DIR=/etc/letsencrypt/live/api.occupancyapp.com"] build-container
 ```

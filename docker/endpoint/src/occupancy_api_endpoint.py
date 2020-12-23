@@ -10,16 +10,8 @@ from handlers.newspacehandler import NewSpaceHandler
 
 def _make_ssl_ctx():
     ssl_ctx = ssl.create_default_context( ssl.Purpose.CLIENT_AUTH )
-    if 'OCCUPANCY_ENDPOINT_CRTFILE' not in os.environ or                            \
-            os.path.isfile( os.environ['OCCUPANCY_ENDPOINT_CRTFILE'] ) is False or  \
-            'OCCUPANCY_ENDPOINT_KEYFILE' not in os.environ or                       \
-            os.path.isfile( os.environ['OCCUPANCY_ENDPOINT_KEYFILE'] ) is False:
-
-        logging.fatal( "Certificate file or key file not specified as env vars or don't exist on disk")
-        sys.exit( 1 )
-
-    crt_file = os.environ['OCCUPANCY_ENDPOINT_CRTFILE']
-    key_file = os.environ['OCCUPANCY_ENDPOINT_KEYFILE']
+    crt_file = 'tls_cert/fullchain.pem'
+    key_file = 'tls_cert/privkey.pem'
 
     logging.info( "TLS certificate and chain: {0}".format(crt_file) )
     logging.info( "          TLS private key: {0}".format(key_file) )

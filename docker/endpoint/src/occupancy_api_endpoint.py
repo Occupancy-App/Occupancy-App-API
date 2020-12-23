@@ -6,6 +6,7 @@ import ssl
 import logging
 import sys
 from handlers.newspacehandler import NewSpaceHandler 
+from handlers.getspacehandler import GetSpaceHandler
 
 
 def _make_ssl_ctx():
@@ -46,7 +47,7 @@ def _make_app():
     return tornado.web.Application(
         [
             (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+)(\/name\/([^\/]+))?", NewSpaceHandler ),
-
+            (r"^\/space/([^\/]+)", GetSpaceHandler ),
         ],
         debug=True
     )

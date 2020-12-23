@@ -45,7 +45,8 @@ def _make_ssl_ctx():
 def _make_app():
     return tornado.web.Application(
         [
-            (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+).*?$", NewSpaceHandler )
+            (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+)(\/name\/([^\/]+))?", NewSpaceHandler ),
+
         ],
         debug=True
     )

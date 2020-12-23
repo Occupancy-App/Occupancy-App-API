@@ -2,6 +2,7 @@ import tornado.web
 import uuid
 import time
 import datetime
+import logging
 
 
 class NewSpaceHandler(tornado.web.RequestHandler):
@@ -29,7 +30,7 @@ class NewSpaceHandler(tornado.web.RequestHandler):
         }
 
 
-    def get( self, current_occupancy, max_occupancy ):
+    def get( self, current_occupancy, max_occupancy, name_group, space_name ):
 
         current_occupancy = int( current_occupancy ) 
         max_occupancy = int( max_occupancy ) 
@@ -45,7 +46,6 @@ class NewSpaceHandler(tornado.web.RequestHandler):
                 current_occupancy = 0
 
             new_space_id = uuid.uuid4()
-            space_name = "placeholder"
 
             now_timestamp = "{0}Z".format(datetime.datetime.utcnow().isoformat())
 

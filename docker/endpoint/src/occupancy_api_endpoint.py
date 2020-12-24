@@ -49,7 +49,7 @@ def _make_app():
         [
             (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+)(\/name\/([^\/]+))?", NewSpaceHandler ),
             (r"^\/space/([^\/]+)", GetSpaceHandler ),
-            (r"^\/space/([^\/]+)/increment\/?", IncrementSpaceOccupancyHandler )
+            (r"^\/space/([^\/]+)/increment\/?", IncrementSpaceOccupancyHandler ),
         ],
         debug=True
     )

@@ -1,4 +1,4 @@
-FROM python:3-alpine 
+FROM python:3.9-alpine 
 
 WORKDIR /usr/src/app
 
@@ -16,4 +16,4 @@ COPY ./certs/privkey.pem   ./tls_cert/
 #   dependencies every time, we can use that cached Docker image layer
 COPY src/ ./
 
-ENTRYPOINT [ "python", "occupancy_api_endpoint.py" ]
+ENTRYPOINT [ "python", "-u", "occupancy_api_endpoint.py" ]

@@ -5,8 +5,9 @@ import tornado.tcpserver
 import ssl
 import logging
 import sys
-from handlers.newspacehandler import NewSpaceHandler 
-from handlers.getspacehandler import GetSpaceHandler
+from handlers.newspacehandler                   import NewSpaceHandler 
+from handlers.getspacehandler                   import GetSpaceHandler
+from handlers.incrementspaceoccupancyhandler    import IncrementSpaceOccupancyHandler
 
 
 def _make_ssl_ctx():
@@ -48,6 +49,7 @@ def _make_app():
         [
             (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+)(\/name\/([^\/]+))?", NewSpaceHandler ),
             (r"^\/space/([^\/]+)", GetSpaceHandler ),
+            (r"^\/space/([^\/]+)/increment\/?", IncrementSpaceOccupancyHandler )
         ],
         debug=True
     )

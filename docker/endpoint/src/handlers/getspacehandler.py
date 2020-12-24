@@ -3,6 +3,7 @@ import uuid
 import logging
 import redis
 import json
+from . import occupancy_api_utils 
 
 
 class GetSpaceHandler(tornado.web.RequestHandler):
@@ -25,17 +26,8 @@ class GetSpaceHandler(tornado.web.RequestHandler):
 
 
     def get(self, space_id): 
-        try:
-            # Make sure the space ID is a legit UUID
-            space_uuid = uuid.UUID( "urn:uuid:{0}".format(space_id) )
-
-            retrieved_data = self._db_handle.get( str(space_uuid) )
-            if retrieved_data is not None:
-                json_obj = json.loads( retrieved_data )
-                logging.debug("Successful retrieval of JSON for space {0}".format(str(space_uuid)) )
-                self.write( json_obj )
-            else:
-                self.set_status( 404, "No data found for space ID {0}".format(space_id) )
-        except redis.RedisError as e:
-            logging.warn("Exception thrown getting JSON for space {0}: {1}".format(space_id, e) )
-            self.set_status( 500, "DB error thrown when requesting data for space ID {0}".format(space_id) )
+        retrieved_hash = occupancy_api_utils.get_redis_hash_by_id( self._db_handle, space_id )
+        if retrieved_hash is not None:
+            self.write( occupancy_api_utils.convert_redis_hash_to_api_response(retrieved_hash) )
+        else:
+            self.set_status( 404 )

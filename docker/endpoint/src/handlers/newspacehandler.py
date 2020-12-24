@@ -5,6 +5,7 @@ import datetime
 import logging
 import redis
 import json
+from . import occupancy_api_utils
 
 
 class NewSpaceHandler(tornado.web.RequestHandler):
@@ -18,7 +19,7 @@ class NewSpaceHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin",      "*")
         self.set_header("Access-Control-Allow-Headers",     "x-requested-with")
-        self.set_header('Access-Control-Allow-Methods',     "GET, OPTIONS")
+        self.set_header('Access-Control-Allow-Methods',     "PUT, OPTIONS")
 
  
     def options(self, current_occupancy, max_occupancy ):
@@ -26,22 +27,7 @@ class NewSpaceHandler(tornado.web.RequestHandler):
         self.finish()
 
 
-    def _create_occupancy_response( self, space_id, space_name, current_occupancy, max_occupancy, 
-            created_timestamp, last_updated_timestamp ):
-
-        return {
-            'space_id'      : str(space_id),
-            'space_name'    : space_name,
-            'occupancy'     : {
-                'current'   : int( current_occupancy ),
-                'maximum'   : int( max_occupancy )
-            },
-            'created'       : created_timestamp,
-            'last_updated'  : last_updated_timestamp
-        }
-
-
-    def get( self, current_occupancy, max_occupancy, name_group, space_name ):
+    def put( self, current_occupancy, max_occupancy, name_group, space_name ):
         current_occupancy = int( current_occupancy ) 
         max_occupancy = int( max_occupancy ) 
 
@@ -64,14 +50,11 @@ class NewSpaceHandler(tornado.web.RequestHandler):
 
             expiration_seconds_since_epoch = time.time() + ttl_seconds
 
-            formatted_output = self._create_occupancy_response( new_space_id, space_name, current_occupancy,
-                max_occupancy, now_timestamp, now_timestamp )
+            # If persisting the output works, send it back to the client in *API* format
+            api_output = occupancy_api_utils.write_new_space_to_db( self._db_handle, 
+                    new_space_id, space_name, int(current_occupancy), int(max_occupancy) )
 
-            # If persisting the output works, send it back to the client
-            if self._write_space_to_db( new_space_id, formatted_output ) is True:
-                self.write( formatted_output )
-            else:
-                self.set_status( 500, "Could not persist new space" )
+            self.write( api_output )
 
  
     def _write_space_to_db( self, space_id, space_info ):

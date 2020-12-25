@@ -1,0 +1,4 @@
+occupancy.env
+certs/
+build-container
+run-container

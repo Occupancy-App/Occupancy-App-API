@@ -1,0 +1,15 @@
+version: '3'
+services:
+  redis:
+    image: redis:6-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-db-data:/data
+  api_endpoint:
+    build: endpoint/
+    ports: 
+      - "80:80"
+    depends_on:
+      - "redis"
+volumes:
+    redis-db-data:

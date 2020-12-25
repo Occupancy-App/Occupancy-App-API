@@ -87,7 +87,7 @@ def increment_occupancy( db_handle, space_id ):
     return _do_occupancy_change( db_handle, space_id, 1 )
 
 
-def decrement_occupancy( db_Hadnle, space_id ):
+def decrement_occupancy( db_handle, space_id ):
     return _do_occupancy_change( db_handle, space_id, -1 )
 
 

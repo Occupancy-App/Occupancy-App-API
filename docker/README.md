@@ -21,7 +21,7 @@ Key file written to `/etc/letsencrypt/live/[domain]/privkey.pem`
 
 ## Install Docker
 
-(Use digitalocean Ubuntu 20.04 instructions)
+Instructions [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04).
 
 ## Install Docker Compose
 

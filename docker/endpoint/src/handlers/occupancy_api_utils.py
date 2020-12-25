@@ -62,7 +62,7 @@ def write_new_space_to_db( db_handle, space_id, space_name, current_occupancy, m
     # Set TTL on the new key
     db_handle.expire( space_redis_key, key_expire_value )
 
-    return "Created new space {0}".format(space_redis_key) 
+    return "Created new space {0}\n".format(space_redis_key) 
 
 
 def convert_redis_hash_to_api_response( redis_hash ):

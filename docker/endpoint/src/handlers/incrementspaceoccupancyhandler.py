@@ -43,7 +43,7 @@ class IncrementSpaceOccupancyHandler(tornado.web.RequestHandler):
             logging.debug("About to try increment for {0}".format(str(space_uuid)) )
             return_value = occupancy_api_utils.increment_occupancy( self._db_handle, space_uuid )
 
-            self.write( "Return value from increment helper: {0}".format(return_value) )
+            self.write( "Return value from increment helper: {0}\n".format(return_value) )
 
             # None means the key wasn't found.  -1 means increment would have violated max.  Otherwise
             # it's the new value

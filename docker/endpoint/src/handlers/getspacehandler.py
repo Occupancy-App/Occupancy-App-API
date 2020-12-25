@@ -28,6 +28,7 @@ class GetSpaceHandler(tornado.web.RequestHandler):
     def get(self, space_id): 
         retrieved_hash = occupancy_api_utils.get_redis_hash_by_id( self._db_handle, space_id )
         if retrieved_hash is not None:
-            self.write( occupancy_api_utils.convert_redis_hash_to_api_response(retrieved_hash) )
+            self.write( "{0}\n".format( 
+                occupancy_api_utils.convert_redis_hash_to_api_response(retrieved_hash)) )
         else:
             self.set_status( 404 )

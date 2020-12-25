@@ -38,6 +38,12 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
             self.finish()
             return
 
+        # If the space doesnsn't exist, bail
+        if self._db_handle.exists( str(space_uuid) ) is False:
+            self.set_status( 404, "Space {0} does not exist".format(str(space_uuid)) )
+            self.finish()
+            return
+
         new_max_occupancy = int( new_max_occupancy ) 
 
         # Sanity check occupancy
@@ -48,6 +54,39 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
             self.finish()
             return
 
-        now_timestamp = "{0}Z".format(datetime.datetime.utcnow().isoformat())
+        redis_key = str( space_uuid )
+
+        # Transaction will lower max, lower current to max if needed, update last updated timestamp, 
+        #   reset TTL
+        with  self._db_handle.pipeline() as pipe:
+            while True:
+                try:
+                    pipe.watch( redis_key ) 
+
+                    new_values = { 
+                        'occupancy_maximum'     : new_max_occupancy,
+                        'last_updated'          : "{0}Z".format( datetime.datetime.utcnow().isoformat() )
+                    }
+
+                    # Back in immediate mode, read any values from database that are needed
+                    curr_occupancy = int( pipe.hget( redis_key, 'occupancy_current' ).decode() )
+                    if curr_occupancy > new_max_occupancy:
+                        new_values['occupancy_current'] = new_max_occupancy
+
+                    # Attomic commit group after this point
+                    pipe.multi() 
+
+                    pipe.hset( redis_key, mapping=new_values )
+                    pipe.expire( redis_key, occupancy_api_utils.key_expire_value )
+
+                    # Commit group is now done
+                    pipe.execute()
+
+                    # Done with this loop
+                    break
+
+                except redis.WatchError:
+                    continue
+
 
         self.write( "New max: {0}\n".format(new_max_occupancy) )

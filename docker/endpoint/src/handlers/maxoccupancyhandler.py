@@ -88,5 +88,6 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
                 except redis.WatchError:
                     continue
 
-
-        self.write( "New max: {0}\n".format(new_max_occupancy) )
+        # Get updated value, return it
+        self.write( occupancy_api_utils.convert_redis_hash_to_api_response(
+            occupancy_api_utils.get_redis_hash_by_id(self._db_handle, redis_key)) )

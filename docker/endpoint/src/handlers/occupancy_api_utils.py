@@ -62,7 +62,8 @@ def write_new_space_to_db( db_handle, space_id, space_name, current_occupancy, m
     # Set TTL on the new key
     db_handle.expire( space_redis_key, key_expire_value )
 
-    return "Created new space {0}\n".format(space_redis_key) 
+    #return "Created new space {0}\n".format(space_redis_key) 
+    return convert_redis_hash_to_api_response( redis_hash )
 
 
 def convert_redis_hash_to_api_response( redis_hash ):
@@ -148,4 +149,5 @@ def _do_occupancy_change( db_handle, space_id, increment_amount ):
                 # Just try again
                 logging.debug( "Watch error tripped on increment for key {0}, retrying".format(redis_key) )
 
-    return computed_new_value
+    # Get updated space entry and return it
+    return convert_redis_hash_to_api_response( get_redis_hash_by_id(db_handle, redis_key) )

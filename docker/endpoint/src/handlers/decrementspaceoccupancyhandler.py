@@ -41,9 +41,7 @@ class DecrementSpaceOccupancyHandler(tornado.web.RequestHandler):
         # Attempt the decrement
         try:
             logging.debug("About to try decrement for {0}".format(str(space_uuid)) )
-            return_value = occupancy_api_utils.decrement_occupancy( self._db_handle, space_uuid )
-
-            self.write( "Return value from decrement helper: {0}\n".format(return_value) )
+            self.write( occupancy_api_utils.decrement_occupancy(self._db_handle, space_uuid) )
 
             # None means the key wasn't found.  -1 means decrement would have violated max.  Otherwise
             # it's the new value

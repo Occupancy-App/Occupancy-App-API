@@ -6,10 +6,17 @@ services:
     volumes:
       - redis-db-data:/data
   api_endpoint:
-    build: endpoint/
-    ports: 
-      - "80:80"
+    build: ./app/
     depends_on:
       - "redis"
+  https_reverse_proxy:
+    container_name: reverse_proxy
+    hostname: reverse-proxy
+    image: nginx:stable-alpine
+    ports:
+      - 443:443
+    volumes:
+      - ./reverse_proxy/config:/etc/nginx
+      - ./reverse_proxy/certs:/etc/ssl/private
 volumes:
     redis-db-data:

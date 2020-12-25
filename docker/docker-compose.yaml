@@ -3,10 +3,18 @@ services:
   redis:
     image: redis:6-alpine
     command: redis-server --appendonly yes
+    networks:
+      - backend
     volumes:
       - redis-db-data:/data
   api_endpoint:
+    hostname: api-endpoint
     build: ./app/
+    expose:
+      - "80"
+    networks:
+      - frontend
+      - backend
     depends_on:
       - "redis"
   https_reverse_proxy:
@@ -15,8 +23,16 @@ services:
     image: nginx:stable-alpine
     ports:
       - 443:443
+    networks:
+      - frontend
+    depends_on:
+      - "api_endpoint"
     volumes:
-      - ./reverse_proxy/config:/etc/nginx
-      - ./reverse_proxy/certs:/etc/ssl/private
+      - ./reverse_proxy/config/nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt:/etc/letsencrypt/
 volumes:
-    redis-db-data:
+  redis-db-data:
+
+networks:
+  frontend:
+  backend:

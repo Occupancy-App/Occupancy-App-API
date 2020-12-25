@@ -2,7 +2,7 @@ FROM python:3.9-alpine
 
 WORKDIR /usr/src/app
 
-EXPOSE 443
+EXPOSE 80
 
 COPY requirements.txt ./
 

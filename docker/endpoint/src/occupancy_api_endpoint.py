@@ -60,11 +60,16 @@ def _make_app():
  
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%SZ' )
+
     application = _make_app()
-    ssl_ctx = _make_ssl_ctx()
-    http_server = tornado.httpserver.HTTPServer( application, ssl_options=ssl_ctx )
-    server_port = 443
+    #ssl_ctx = _make_ssl_ctx()
+    http_server = tornado.httpserver.HTTPServer( application ) #, ssl_options=ssl_ctx )
+    server_port = 80
     http_server.listen( server_port )
-    logging.info( "Listening for HTTPS connections on port {0}".format(server_port) )
+    logging.info( "Listening for connections on port {0}".format(server_port) )
     tornado.ioloop.IOLoop.current().start()

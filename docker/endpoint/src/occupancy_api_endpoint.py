@@ -9,6 +9,7 @@ from handlers.newspacehandler                   import NewSpaceHandler
 from handlers.getspacehandler                   import GetSpaceHandler
 from handlers.incrementspaceoccupancyhandler    import IncrementSpaceOccupancyHandler
 from handlers.decrementspaceoccupancyhandler    import DecrementSpaceOccupancyHandler
+from handlers.maxoccupancyhandler               import MaxOccupancyHandler
 
 
 def _make_ssl_ctx():
@@ -48,10 +49,11 @@ def _make_ssl_ctx():
 def _make_app():
     return tornado.web.Application(
         [
-            (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+)(\/name\/([^\/]+))?", NewSpaceHandler ),
-            (r"^\/space/([^\/]+)", GetSpaceHandler ),
-            (r"^\/space/([^\/]+)/increment\/?", IncrementSpaceOccupancyHandler ),
-            (r"^\/space/([^\/]+)/decrement\/?", DecrementSpaceOccupancyHandler )
+            (r"^\/space\/new\/occupancy\/current\/(\d+)\/max\/(\d+)(\/name\/([^\/]+))?",    NewSpaceHandler ),
+            (r"^\/space/([^\/]+)",                                                          GetSpaceHandler ),
+            (r"^\/space/([^\/]+)/increment\/?",                                             IncrementSpaceOccupancyHandler ),
+            (r"^\/space/([^\/]+)/decrement\/?",                                             DecrementSpaceOccupancyHandler ),
+            (r"^\/space/([^\/]+)/max\/(\d+)\/?",                                            MaxOccupancyHandler ),
         ],
         debug=True
     )

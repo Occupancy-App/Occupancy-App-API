@@ -41,10 +41,14 @@ class IncrementSpaceOccupancyHandler(tornado.web.RequestHandler):
         # Attempt the increment
         try:
             logging.debug("About to try increment for {0}".format(str(space_uuid)) )
-            self.write( occupancy_api_utils.increment_occupancy(self._db_handle, space_uuid) )
+            increment_response = occupancy_api_utils.increment_occupancy(self._db_handle, space_uuid)
 
-            # None means the key wasn't found.  -1 means increment would have violated max.  Otherwise
-            # it's the new value
+            # None means no space with that ID was found, otherwise we get a valid dictionary to write back out
+            if increment_response is None:
+                self.set_status( 404, "Space ID {0} was not found".format(space_id) )
+                self.write( { "error": "Space ID {0} was not found".format(space_id) } )
+            else:
+                self.write( increment_response )
 
         except redis.RedisError as e:
             self.set_status( 500, "Redis error: {0}".format(e) )

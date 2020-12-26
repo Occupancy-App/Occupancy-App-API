@@ -23,7 +23,7 @@ def get_redis_hash_by_id( db_handle, space_id ):
         for key in retrieved_data:
             json_obj[ key.decode() ] = retrieved_data[key].decode()
         logging.debug("Successful retrieval of hash for space {0}".format(str(space_uuid)) )
-        logging.debug("Retrieved data:\n{0}".format(json.dumps(json_obj, indent=4, sort_keys=True)))
+        #logging.debug("Retrieved data:\n{0}".format(json.dumps(json_obj, indent=4, sort_keys=True)))
 
         # Refresh its TTL
         db_handle.expire( str(space_uuid), key_expire_value ) 
@@ -101,8 +101,14 @@ def _do_occupancy_change( db_handle, space_id, increment_amount ):
     redis_key = str(space_id)
 
     # No key by that name, nothing to do here
-    if db_handle.exists( redis_key ) is False:
+    exists_test = db_handle.exists( redis_key )
+    if exists_test == 0:
+        logging.warn("Tried an increment on space {0} which does not exist, bailing".format(
+            redis_key) )
         return None
+    else:
+        logging.debug( "Space ID {0} passed a DB \"exists\" test, we think it's in the DB".format(
+            redis_key) )
 
     # Pipelines are used for transactions
     with db_handle.pipeline() as pipe:
@@ -146,8 +152,8 @@ def _do_occupancy_change( db_handle, space_id, increment_amount ):
                     increment_completed = True
 
                 else:
-                    # Doing the change would violate bounds, show unchanged
-                    return current_occupancy
+                    # Doing the change would violate bounds, return original, unchanged value
+                    break
 
             # Our element got changed underneath us, restart from scratch
             except redis.WatchError:

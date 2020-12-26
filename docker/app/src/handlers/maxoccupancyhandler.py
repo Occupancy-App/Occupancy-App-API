@@ -22,7 +22,7 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods',     "PUT, OPTIONS")
 
  
-    def options(self, current_occupancy, max_occupancy ):
+    def options(self, space_id, new_max_occupancy ):
         self.set_status(204)
         self.finish()
 

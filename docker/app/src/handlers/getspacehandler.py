@@ -20,7 +20,7 @@ class GetSpaceHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods',     "GET, OPTIONS")
 
  
-    def options(self, current_occupancy, max_occupancy ):
+    def options(self, space_id):
         self.set_status(204)
         self.finish()
 

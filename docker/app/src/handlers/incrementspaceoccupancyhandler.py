@@ -34,7 +34,8 @@ class IncrementSpaceOccupancyHandler(tornado.web.RequestHandler):
             space_uuid = uuid.UUID( "urn:uuid:{0}".format(space_id) )
         except:
             logging.warn("Space ID not a GUID in {0}".format(space_id) )
-            self.set_status( 404 )
+            self.set_status( 400 )
+            self.write( { "error": "Submitted ID {0} is not a valid GUID".format(space_id) } )
             self.finish()
             return
 

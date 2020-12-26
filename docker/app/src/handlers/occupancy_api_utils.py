@@ -14,11 +14,16 @@ def get_redis_hash_by_id( db_handle, space_id ):
     space_uuid = uuid.UUID( "urn:uuid:{0}".format(space_id) )
 
     retrieved_data = db_handle.hgetall( str(space_uuid) )
-    if retrieved_data is not None:
+    
+    # If no key matches the requested UUID, we get an empty hash back
+    # Empty hashes evaluate to False. Not that None also evaluates to false, so 
+    # it's a safe test for both
+    if bool(retrieved_data) is True:
         json_obj = {}
         for key in retrieved_data:
             json_obj[ key.decode() ] = retrieved_data[key].decode()
         logging.debug("Successful retrieval of hash for space {0}".format(str(space_uuid)) )
+        logging.debug("Retrieved data:\n{0}".format(json.dumps(json_obj, indent=4, sort_keys=True)))
 
         # Refresh its TTL
         db_handle.expire( str(space_uuid), key_expire_value ) 

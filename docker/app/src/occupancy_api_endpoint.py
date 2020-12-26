@@ -1,6 +1,7 @@
 import tornado.ioloop
 import tornado.web
 import logging
+from handlers.invalidurlhandler                 import InvalidUrlHandler
 from handlers.newspacehandler                   import NewSpaceHandler 
 from handlers.getspacehandler                   import GetSpaceHandler
 from handlers.incrementspaceoccupancyhandler    import IncrementSpaceOccupancyHandler
@@ -17,6 +18,7 @@ def _make_app():
             (r"^\/space/([^\/]+)/decrement\/?",                                             DecrementSpaceOccupancyHandler ),
             (r"^\/space/([^\/]+)/max\/(\d+)\/?",                                            MaxOccupancyHandler ),
         ],
+        default_handler_class=InvalidUrlHandler,
         debug=True
     )
  

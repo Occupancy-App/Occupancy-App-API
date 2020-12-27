@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # Create a user account to run the code from, that's fine as we're on a non-privileged port
-RUN adduser --disabled-password  apiuser
+RUN adduser --disabled-password apiuser
 WORKDIR /home/apiuser/api_app
 USER apiuser
 

@@ -4,6 +4,11 @@
 
 ### Ubuntu 20.04
 
+#### Set up DNS record
+
+Need a DNS A record to point to IP address where you're installing in order 
+to get a certificate assigned for that host.
+
 
 #### LetsEncrypt
 

@@ -1,4 +1,4 @@
-# OccupancyApp Endpoing
+# OccupancyApp API Endpoint App
 
 ## Installation
 
@@ -33,27 +33,44 @@ Key file written to `/etc/letsencrypt/live/api.occupancyapp.com/privkey.pem`
 Now that the certificate was assigned, close TCP port 80 (HTTP) access to this host.
 
 
-#### Create 4096-bit dhparams file
+#### Create High-Quality Diffie-Helman Parameter File
 
 ```
 $ openssl dhparam -out dhparam.pem 4096
 ```
 
-## Install Docker
+#### Install Docker
 
 Instructions [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04).
 
-## Install Docker Compose
+#### Install Docker Compose
 
 Use [these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
 
-## Build containers
+
+#### Automatic TLS Certificate Renewal
+
+Do the cron stuff needed for daily renewal check and container rebuild.
+
+#### Find nginx and Alpine OpenSSL Versions
+
+We need to know versions.
+
+#### Create proper NGINX Config, Update As Necessary
+
+Do the auto config builder, check against existing.
+
+#### Build containers
 
 ```
 $ docker-compose build
 ```
 
-### Run containers
+#### Open HTTPS Firewall port
+
+Do some firewall stuff.
+
+#### Run containers
 
 ```
 $ docker-compose up --detach

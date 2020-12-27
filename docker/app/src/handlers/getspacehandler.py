@@ -36,8 +36,7 @@ class GetSpaceHandler(tornado.web.RequestHandler):
 
         retrieved_hash = occupancy_api_utils.get_redis_hash_by_id( self._db_handle, str(space_uuid) )
         if retrieved_hash is not None:
-            self.write( "{0}\n".format( 
-                occupancy_api_utils.convert_redis_hash_to_api_response(retrieved_hash)) )
+            self.write( occupancy_api_utils.convert_redis_hash_to_api_response(retrieved_hash) )
         else:
             self.set_status( 404, "No space found with ID {0}".format(space_id) )
             self.write( { "error": "No space found with requested ID {0}".format(space_id) } )

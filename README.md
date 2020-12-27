@@ -9,12 +9,16 @@
 Need a DNS A record to point to IP address where you're installing in order 
 to get a certificate assigned for that host.
 
+#### Open Firewall For Certificate Request
+
+Open incoming connections to TCP port 80 to allow the certificate validation to pass.
 
 #### LetsEncrypt
 
 Using [these instructions](https://tecadmin.net/how-to-setup-lets-encrypt-on-ubuntu-20-04/).
 
 ```shell
+$ sudo apt-get update
 $ sudo apt-get -y install certbot 
 $ sudo certbot certonly --standalone --rsa-key-size 4096 -d api.occupancyapp.com
 ```
@@ -22,6 +26,11 @@ $ sudo certbot certonly --standalone --rsa-key-size 4096 -d api.occupancyapp.com
 Certificate and chain written to `/etc/letsencrypt/live/api.occupancyapp.com/fullchain.pem`
 
 Key file written to `/etc/letsencrypt/live/api.occupancyapp.com/privkey.pem`
+
+#### Close HTTP Port 
+
+Now that the certificate was assigned, close TCP port 80 (HTTP) access to this host.
+
 
 #### Create 4096-bit dhparams file
 

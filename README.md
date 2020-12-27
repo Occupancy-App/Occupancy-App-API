@@ -96,12 +96,12 @@ The contents of the file should be shown for the `crontab -l` command.
 * Alpine OpenSSL Version
     - In the same displayed Dockerfile, the very first line will be `FROM alpine:[version identifier]`
     - Example: as of 2020-12-27, it's Alpine 3.11
-    - Go to (this Alpine package search page)[https://pkgs.alpinelinux.org/packages]
+    - Go to [this Alpine package search page](https://pkgs.alpinelinux.org/packages)
     - In "Package Filter" section, enter `openssl` as the Package Name and click the first dropdown and select the proper version of
 Alpine (e.g., 3.11)
     - Click the blue "Search" button
     - The entries in the "Version" column will tell you which version of OpenSSL will be used
-    - Example, for Alpine 3.11 ships with OpenSSL [1.1.1i](https://pkgs.alpinelinux.org/packages?name=openssl&branch=v3.11).
+    - Example: [Alpine 3.11 ships with OpenSSL version 1.1.1i](https://pkgs.alpinelinux.org/packages?name=openssl&branch=v3.11).
 
 #### Create proper NGINX Config, Update As Necessary
 

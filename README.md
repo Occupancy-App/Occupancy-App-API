@@ -61,7 +61,7 @@ $ sudo bash
 Add the following file contents:
 
 ```
-DOCKER_COMPOSE_YAML=/home/ubuntu/git/Occupancy-App-API/docker/docker-compose.yaml
+DOCKER_COMPOSE_YAML=/full/path/to/Occupancy-App-API/docker/docker-compose.yaml
 
 # Example of job definition:
 # .---------------- minute (0 - 59)
@@ -203,11 +203,24 @@ $ curl -X PUT https://[your hostname]/space/new/occupancy/current/0/max/50/name/
 
 Success will be JSON output similar to the previous section.
 
+##### Test TLS Security Grade
+
+Go to [SSL Labs SSL Server Test](https://www.ssllabs.com/ssltest/), enter 
+the hostname of your endpoint, and click "Submit."
+
+Should get an A+ grade. If you don't, figure out what needs to change in 
+nginx configuration to get a better score.
+
 #### Set up recurring rebuild/restart job
 
 Because things happen.
 
-#### Confirm Containers Restart After Reboot
+#### Confirm Containers Restart Cleanly After Reboot
 
-This is important for reliability.
+Reboot the host running the Docker containers, and re-run the "Remote Test" 
+section. Need to make sure that a host reboot is not a big deal for a 
+production service.
+
+#### Configure Recurring Rebuild/Restart Task
+
 

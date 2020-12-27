@@ -49,12 +49,44 @@ Instructions [here](https://www.digitalocean.com/community/tutorials/how-to-inst
 
 #### Install Docker Compose
 
-Use [these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
+Use [these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04).
 
 
 #### Automatic TLS Certificate Renewal
 
-Do the cron stuff needed for daily renewal check and container rebuild.
+```
+$ sudo bash
+# cd ~
+# vi crontab.root
+```
+
+Add the following file contents:
+
+```
+DOCKER_COMPOSE_YAML=/full/path/to/occupancy/docker-compose.yaml
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+0 6  *  *  *  /usr/bin/certbot renew --pre-hook "/usr/local/bin/docker-compose -f $DOCKER_COMPOSE_YAML down" --post-hook "/usr/local/bin/docker-compose -f $DOCKER_COMPOSE_YAML up -d"
+```
+
+Then run:
+
+```
+# crontab crontab.root
+# crontab -l
+# exit
+$ 
+```
+
+The contents of the file should be shown for the `crontab -l` command.
+
 
 #### Find nginx and Alpine OpenSSL Versions
 

@@ -37,7 +37,9 @@ $ cd ~/git/Occupancy-App-API/docker/reverse_proxy/crypto
 $ openssl dhparam -out dhparam.pem 4096
 ```
 
-The `openssl` command will take awhile (5-10 minutes based on CPU speed from my experience).
+The `openssl` command will take quite some time (5-15 minutes based on 
+CPU speed from my experience). Turns out high-grade prime numbers that
+are 4,096 bits in size take awhile to find. :)
 
 #### Install Docker
 
@@ -59,7 +61,7 @@ $ sudo bash
 Add the following file contents:
 
 ```
-DOCKER_COMPOSE_YAML=/full/path/to/occupancy/docker-compose.yaml
+DOCKER_COMPOSE_YAML=/home/ubuntu/git/Occupancy-App-API/docker/docker-compose.yaml
 
 # Example of job definition:
 # .---------------- minute (0 - 59)
@@ -72,6 +74,8 @@ DOCKER_COMPOSE_YAML=/full/path/to/occupancy/docker-compose.yaml
 0 6  *  *  *  /usr/bin/certbot renew --pre-hook "/usr/local/bin/docker-compose -f $DOCKER_COMPOSE_YAML down" --post-hook "/usr/local/bin/docker-compose -f $DOCKER_COMPOSE_YAML up -d"
 ```
 
+Obviously update to the proper path for your system, e.g., `/home/ubuntu/git/Occupancy-App-API/docker/docker-compose.yaml`.
+
 Then run:
 
 ```
@@ -83,10 +87,21 @@ $
 
 The contents of the file should be shown for the `crontab -l` command.
 
-
 #### Find nginx and Alpine OpenSSL Versions
 
-We need to know versions.
+* nginx Version
+** Go to the [Docker Hub page for nginx](https://hub.docker.com/_/nginx) and click on the `stable-alpine` tag
+** In the first 15-20 lines of the displayed Dockerfile, it'll say something like `ENV NGINX_VERSION 1.18.0`
+** That means your nginx version will be 1.18.0
+* Alpine OpenSSL Version
+** In the same displayed Dockerfile, the very first line will be `FROM alpine:[version identifier]`
+** As of 2020-12-27, it's Alpine 3.11
+** Go to (this Alpine package search page)[https://pkgs.alpinelinux.org/packages]
+** In "Package Filter" section, enter `openssl` as the Package Name and click the first dropdown and select the proper version of
+Alpine (e.g., 3.11)
+** Click the blue "Search" button
+** The entries in the "Version" column will tell you which version of OpenSSL will be used
+** Example, for Alpine 3.11 ships with OpenSSL [1.1.1i](https://pkgs.alpinelinux.org/packages?name=openssl&branch=v3.11).
 
 #### Create proper NGINX Config, Update As Necessary
 

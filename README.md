@@ -205,7 +205,7 @@ Success will be JSON output similar to the previous section.
 
 ##### Test TLS Security Grade
 
-Go to [SSL Labs SSL Server Test](https://www.ssllabs.com/ssltest/), enter 
+Go to SSL Labs [SSL Server Test](https://www.ssllabs.com/ssltest/), enter 
 the hostname of your endpoint, and click "Submit."
 
 Should get an A+ grade. If you don't, figure out what needs to change in 

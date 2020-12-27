@@ -1,0 +1,18 @@
+#!/usr/bin/bash
+
+DOCKER_COMPOSE=/usr/local/bin/docker-compose
+HOME=/home/tdo
+OCCUPANCY_APP_DOCKER_COMPOSE_YAML=${HOME}/git/Occupancy-App-API/docker/docker-compose.yaml
+
+# Remove any stopped containers
+${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} rm -f 
+
+# Make sure we have latest upstream images 
+${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} pull 
+
+# Do a deep rebuild (pull upstream image and do not cache any layers) of the container
+#       we build from source
+${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} build --force-rm --no-cache 
+
+# Recreate and restart all newly-rebuilt containers 
+${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} up --force-recreate --detach 

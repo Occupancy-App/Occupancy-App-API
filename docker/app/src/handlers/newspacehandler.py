@@ -22,7 +22,7 @@ class NewSpaceHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods',     "PUT, OPTIONS")
 
  
-    def options(self, current_occupancy, max_occupancy ):
+    def options(self, current_occupancy, max_occupancy, name_group, space_name ):
         self.set_status(204)
         self.finish()
 

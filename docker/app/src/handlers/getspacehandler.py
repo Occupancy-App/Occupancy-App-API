@@ -20,15 +20,25 @@ class GetSpaceHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods',     "GET, OPTIONS")
 
  
-    def options(self, current_occupancy, max_occupancy ):
+    def options(self, space_id):
         self.set_status(204)
         self.finish()
 
 
     def get(self, space_id): 
-        retrieved_hash = occupancy_api_utils.get_redis_hash_by_id( self._db_handle, space_id )
+        try:
+            space_uuid = uuid.UUID( "urn:uuid:{0}".format(space_id) )
+        except:
+            self.set_status( 400 )
+            self.write( { "error": "{0} is not in valid GUID format".format(space_id) } )
+            self.finish()
+            return
+
+        retrieved_hash = occupancy_api_utils.get_redis_hash_by_id( self._db_handle, str(space_uuid) )
         if retrieved_hash is not None:
             self.write( "{0}\n".format( 
                 occupancy_api_utils.convert_redis_hash_to_api_response(retrieved_hash)) )
         else:
-            self.set_status( 404 )
+            self.set_status( 404, "No space found with ID {0}".format(space_id) )
+            self.write( { "error": "No space found with requested ID {0}".format(space_id) } )
+            self.finish()

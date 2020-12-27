@@ -11,13 +11,18 @@ Using [these instructions](https://tecadmin.net/how-to-setup-lets-encrypt-on-ubu
 
 ```shell
 $ sudo apt-get -y install certbot 
-$ sudo certbot certonly --standalone -d [FQDN, e.g. "api.occupancyapp.com")]
+$ sudo certbot certonly --standalone --rsa-key-size 4096 -d api.occupancyapp.com
 ```
 
-Certificate and chain written to `/etc/letsencrypt/live/[domain]/fullchain.pem`
+Certificate and chain written to `/etc/letsencrypt/live/api.occupancyapp.com/fullchain.pem`
 
-Key file written to `/etc/letsencrypt/live/[domain]/privkey.pem`
+Key file written to `/etc/letsencrypt/live/occupancyapp/privkey.pem`
 
+#### Create 4096-bit dhparams file
+
+```
+$ openssl dhparam -out dhparam.pem 4096`
+```
 
 ## Install Docker
 

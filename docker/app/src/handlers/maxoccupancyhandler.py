@@ -22,7 +22,7 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Methods',     "PUT, OPTIONS")
 
  
-    def options(self, current_occupancy, max_occupancy ):
+    def options(self, space_id, new_max_occupancy ):
         self.set_status(204)
         self.finish()
 
@@ -35,12 +35,14 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
         except:
             logging.warn( "Invalid space ID, not a GUID: {0}".format(space_id) )
             self.set_status( 400, "Invalid space ID format {0}".format(space_id) )
+            self.write( { "error": "Given space ID {0} is not a valid GUID format".format(space_id) } )
             self.finish()
             return
 
         # If the space doesnsn't exist, bail
-        if self._db_handle.exists( str(space_uuid) ) is False:
+        if self._db_handle.exists( str(space_uuid) ) == 0:
             self.set_status( 404, "Space {0} does not exist".format(str(space_uuid)) )
+            self.write( { "error": "Space {0} does not exist".format(str(space_uuid)) } )
             self.finish()
             return
 
@@ -51,6 +53,8 @@ class MaxOccupancyHandler(tornado.web.RequestHandler):
             self.set_status( 400, 
                 "Invalid occupancy value: {0}, passed value must be 1 <= max_occupancy <= 100000".format(
                     new_max_occupancy) )
+            self.write( { "error": "Invalid occupancy value {0}, must be 1 <= max <= 100000".format(
+                new_max_occupancy) } )
             self.finish()
             return
 

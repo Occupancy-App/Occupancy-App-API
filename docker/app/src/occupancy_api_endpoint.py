@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     application = _make_app()
     http_server = tornado.httpserver.HTTPServer( application ) 
-    server_port = 80
+    server_port = 8000
     http_server.listen( server_port )
     logging.info( "Listening for connections on port {0}".format(server_port) )
     tornado.ioloop.IOLoop.current().start()

@@ -33,7 +33,7 @@ Key file written to `/etc/letsencrypt/live/api.occupancyapp.com/privkey.pem`
 Now that the certificate was assigned, close TCP port 80 (HTTP) access to this host.
 
 
-#### Create High-Quality Diffie-Helman Parameter File
+#### Create High-Quality Diffie-Hellman Parameter File
 
 ```
 $ mkdir -p ~/git/Occupany-App-API/docker/reverse_proxy/crypto
@@ -79,5 +79,13 @@ Do some firewall stuff.
 ```
 $ docker-compose up --detach
 ```
+
+#### Set up recurring rebuild/restart job
+
+Because things happen.
+
+#### Confirm Containers Restart After Reboot
+
+This is important for reliability.
 
 (Leave off the detach if you want to stay attached and watch logs)

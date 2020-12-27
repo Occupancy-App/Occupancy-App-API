@@ -110,27 +110,98 @@ Alpine (e.g., 3.11)
     - *Server*: nginx
     - *Mozilla Configuration*: Intermediate
     - *Environment*
-        - *Server Verion*: the version of nginx determined in previous section
+        - *Server Version*: the version of nginx determined in previous section
         - *OpenSSL Version*: the OpenSSL version determined in previous section
     - *Miscellaneous*
         - *HTTP Strict Transport Security*: checked
         - *OCSP Stapling*: checked
 
-#### Build containers
+Compare the generated configuration to `.../Occupancy-App-API/docker/reverse_proxy/config/nginx.conf`.
 
-```
-$ docker-compose build
-```
+Update any fields that are incorrect for your installation 
+(e.g., server_name and path to the certificate files).
+
+Also update any recommended security settings that may have changed since this writing.
 
 #### Open HTTPS Firewall port
 
-Do some firewall stuff.
+Permit incoming HTTPS traffic (TCP port 443) to reach your host. 
 
 #### Run containers
 
 ```
-$ docker-compose up --detach
+$ cd ~/git/Occupancy-App-API/docker
+$ docker-compose up --build --detach
 ```
+
+#### Make sure containers started cleanly
+
+##### Check Running Containers
+
+```
+$ docker ps
+```
+
+You should see the three Occupancy backend containers running:
+
+```
+CONTAINER ID   IMAGE                 COMMAND                  CREATED              STATUS              PORTS                          NAMES
+f0eb3694303f   nginx:stable-alpine   "/docker-entrypoint.…"   About a minute ago   Up About a minute   80/tcp, 0.0.0.0:443->443/tcp   reverse_proxy
+27c8ccb23d30   docker_api_endpoint   "python occupancy_ap…"   About a minute ago   Up About a minute   80/tcp, 8000/tcp               docker_api_endpoint_1
+31214a56b1a0   redis:6-alpine        "docker-entrypoint.s…"   About a minute ago   Up About a minute   6379/tcp                       docker_redis_1
+```
+
+##### Check Docker Logs
+
+The following output shows a healthy startup of the system.
+
+```
+$ docker-compose logs
+Attaching to reverse_proxy, docker_api_endpoint_1, docker_redis_1
+api_endpoint_1         | 2020-12-27 21:02:19Z INFO     Listening for connections on port 8000
+redis_1                | 1:C 27 Dec 2020 21:02:18.673 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis_1                | 1:C 27 Dec 2020 21:02:18.673 # Redis version=6.0.9, bits=64, commit=00000000, modified=0, pid=1, just started
+redis_1                | 1:C 27 Dec 2020 21:02:18.673 # Configuration loaded
+redis_1                | 1:M 27 Dec 2020 21:02:18.675 * Running mode=standalone, port=6379.
+redis_1                | 1:M 27 Dec 2020 21:02:18.675 # Server initialized
+redis_1                | 1:M 27 Dec 2020 21:02:18.675 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis_1                | 1:M 27 Dec 2020 21:02:18.675 * Ready to accept connections
+reverse_proxy          | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+reverse_proxy          | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+reverse_proxy          | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+reverse_proxy          | 10-listen-on-ipv6-by-default.sh: Getting the checksum of /etc/nginx/conf.d/default.conf
+reverse_proxy          | 10-listen-on-ipv6-by-default.sh: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+reverse_proxy          | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+reverse_proxy          | /docker-entrypoint.sh: Configuration complete; ready for start up
+```
+
+##### Test Locally
+
+See if you can hit port 443 locally. 
+
+*Note*: we have to put curl in an insecure mode as the hostname will not 
+match the hostname in the TLS certificate presented by the server, which 
+quite rightly curl should be concerned about.
+
+```
+$ curl --insecure -X PUT https://localhost/space/new/occupancy/current/0/max/50/name/testingonetwothree
+```
+
+Should get data returned for a JSON object describing a new space, similar to:
+
+```
+{"space_id": "7fcccca5-5ee3-4c82-a0fc-4d1df69a882d", "space_name": "testingonetwothree", "occupancy": {"current": 0, "maximum": 50}, "created": "2020-12-27T21:10:28.602467Z", "last_updated": "2020-12-27T21:10:28.602467Z"}
+```
+
+##### Test Remotely
+
+Go to a separate host that will have to reach across the network to talk to your new API endpoint, and run:
+
+```
+$ curl -X PUT https://[your hostname]/space/new/occupancy/current/0/max/50/name/testingonetwothree
+```
+
+Success will be JSON output similar to the previous section.
 
 #### Set up recurring rebuild/restart job
 
@@ -140,4 +211,3 @@ Because things happen.
 
 This is important for reliability.
 
-(Leave off the detach if you want to stay attached and watch logs)

@@ -189,7 +189,7 @@ $ curl --insecure -X PUT https://localhost/space/new/occupancy/current/0/max/50/
 
 Should get data returned for a JSON object describing a new space, similar to:
 
-```
+```json
 {"space_id": "7fcccca5-5ee3-4c82-a0fc-4d1df69a882d", "space_name": "testingonetwothree", "occupancy": {"current": 0, "maximum": 50}, "created": "2020-12-27T21:10:28.602467Z", "last_updated": "2020-12-27T21:10:28.602467Z"}
 ```
 

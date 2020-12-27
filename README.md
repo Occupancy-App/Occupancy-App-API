@@ -105,7 +105,16 @@ Alpine (e.g., 3.11)
 
 #### Create proper NGINX Config, Update As Necessary
 
-Do the auto config builder, check against existing.
+* Go to the [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/)
+* Enter the following values:
+    - *Server*: nginx
+    - *Mozilla Configuration*: Intermediate
+    - *Environment*
+        - *Server Verion*: the version of nginx determined in previous section
+        - *OpenSSL Version*: the OpenSSL version determined in previous section
+    - *Miscellaneous*
+        - *HTTP Strict Transport Security*: checked
+        - *OCSP Stapling*: checked
 
 #### Build containers
 

@@ -211,16 +211,132 @@ the hostname of your endpoint, and click "Submit."
 Should get an A+ grade. If you don't, figure out what needs to change in 
 nginx configuration to get a better score.
 
-#### Set up recurring rebuild/restart job
-
-Because things happen.
-
 #### Confirm Containers Restart Cleanly After Reboot
 
-Reboot the host running the Docker containers, and re-run the "Remote Test" 
-section. Need to make sure that a host reboot is not a big deal for a 
-production service.
+Reboot the host running the Docker containers, and re-run the "Remote Test"
+section. Need to make sure that a
 
-#### Configure Recurring Rebuild/Restart Task
+#### Set up recurring rebuild/restart job
 
+```
+$ cd ~
+$ mkdir bin
+$ cd bin
+$ cp /path/to/Occupancy-App-API/docker/app/util/pull-upstream-images-and-rebuild-occupancy .
+$ chmod u+x ./pull-upstream-images-and-rebuild-occupancy
+```
+
+Edit the new script to match the location of the Occupancy Git repository 
+on your host.
+
+Run the new script and make sure Occupancy restarts cleanly.
+
+```
+$ ~/bin/pull-upstream-images-and-rebuild-occupancy
+No stopped containers
+Pulling redis               ... done
+Pulling api_endpoint        ... done
+Pulling https_reverse_proxy ... done
+redis uses an image, skipping
+https_reverse_proxy uses an image, skipping
+Building api_endpoint
+Step 1/11 : FROM python:3.9-alpine
+ ---> d4d4f50f871a
+Step 2/11 : EXPOSE 8000
+ ---> Running in 437ad7101111
+Removing intermediate container 437ad7101111
+ ---> c554194fd9b3
+Step 3/11 : COPY requirements.txt /tmp
+ ---> 44280fffbd5f
+Step 4/11 : RUN pip install --no-cache-dir -r /tmp/requirements.txt
+ ---> Running in 0ee99aba44ed
+Collecting redis==3.5.3
+  Downloading redis-3.5.3-py2.py3-none-any.whl (72 kB)
+Collecting tornado==6.1
+  Downloading tornado-6.1.tar.gz (497 kB)
+Building wheels for collected packages: tornado
+  Building wheel for tornado (setup.py): started
+  Building wheel for tornado (setup.py): finished with status 'done'
+  Created wheel for tornado: filename=tornado-6.1-cp39-cp39-linux_x86_64.whl size=414477 sha256=9370f789c61e614afffa0f3dfb8bb61c9c4456e0251f53a702221607d7ab0efb
+  Stored in directory: /tmp/pip-ephem-wheel-cache-imd8w7lr/wheels/e6/6b/c3/dbb71bdabdc4681fb3cdf364f2c969f39ebc13c1a512cf6e43
+Successfully built tornado
+Installing collected packages: tornado, redis
+Successfully installed redis-3.5.3 tornado-6.1
+Removing intermediate container 0ee99aba44ed
+ ---> fb23e7278556
+Step 5/11 : ENV PYTHONUNBUFFERED=1
+ ---> Running in f3e5b3176740
+Removing intermediate container f3e5b3176740
+ ---> ed06e6adee89
+Step 6/11 : ENV PYTHONDONTWRITEBYTECODE=1
+ ---> Running in fb7f6d7fe5ac
+Removing intermediate container fb7f6d7fe5ac
+ ---> 5996fbe9934d
+Step 7/11 : RUN adduser --disabled-password apiuser
+ ---> Running in 6ed73f4cfbbd
+Removing intermediate container 6ed73f4cfbbd
+ ---> 9eea1df87cbf
+Step 8/11 : WORKDIR /home/apiuser/api_app
+ ---> Running in b06fd64f8652
+Removing intermediate container b06fd64f8652
+ ---> dd26264488f2
+Step 9/11 : USER apiuser
+ ---> Running in c20ffd1da6ad
+Removing intermediate container c20ffd1da6ad
+ ---> 57c0315115e2
+Step 10/11 : COPY src/ ./
+ ---> 6b8271a28457
+Step 11/11 : ENTRYPOINT [ "python", "occupancy_api_endpoint.py" ]
+ ---> Running in dccc0b2e25a5
+Removing intermediate container dccc0b2e25a5
+ ---> 24991e1aadf1
+
+Successfully built 24991e1aadf1
+Successfully tagged docker_api_endpoint:latest
+Recreating docker_redis_1 ... done
+Recreating docker_api_endpoint_1 ... done
+Recreating reverse_proxy         ... done
+
+$ docker ps
+$ docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED              STATUS              PORTS                          NAMES
+7aef6b2582f8   nginx:stable-alpine   "/docker-entrypoint.…"   About a minute ago   Up About a minute   80/tcp, 0.0.0.0:443->443/tcp   reverse_proxy
+d16790fcb798   docker_api_endpoint   "python occupancy_ap…"   About a minute ago   Up About a minute   80/tcp, 8000/tcp               docker_api_endpoint_1
+f01ad2e8c359   redis:6-alpine        "docker-entrypoint.s…"   About a minute ago   Up About a minute   6379/tcp                       docker_redis_1
+```
+
+Now create a nightly cron job to run this script.
+
+```
+$ cd ~
+$ vi crontab.[your username]
+```
+
+Add the following contents:
+
+```
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+
+# 0700 (host time) every day
+0 7 * * * /home/[username]/bin/pull-upstream-images-and-rebuild-occupancy
+```
+
+Now set this crontab for the user:
+
+```
+$ crontab crontab.[username]
+$ crontab -l
+```
+
+That should list the contents of the file you just added.
 

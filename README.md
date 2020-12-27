@@ -20,7 +20,8 @@ Using [these instructions](https://tecadmin.net/how-to-setup-lets-encrypt-on-ubu
 ```shell
 $ sudo apt-get update
 $ sudo apt-get -y install certbot 
-$ sudo certbot certonly --standalone --rsa-key-size 4096 -d api.occupancyapp.com
+$ sudo certbot certonly --non-interactive --standalone --agree-tos --email [email address] --rsa-key-size 4096 --domain
+[fully-qualified hostname, e.g. api.occupancyapp.com]
 ```
 
 Certificate and chain written to `/etc/letsencrypt/live/api.occupancyapp.com/fullchain.pem`

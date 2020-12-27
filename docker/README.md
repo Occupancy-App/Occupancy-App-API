@@ -16,12 +16,12 @@ $ sudo certbot certonly --standalone --rsa-key-size 4096 -d api.occupancyapp.com
 
 Certificate and chain written to `/etc/letsencrypt/live/api.occupancyapp.com/fullchain.pem`
 
-Key file written to `/etc/letsencrypt/live/occupancyapp/privkey.pem`
+Key file written to `/etc/letsencrypt/live/api.occupancyapp.com/privkey.pem`
 
 #### Create 4096-bit dhparams file
 
 ```
-$ openssl dhparam -out dhparam.pem 4096`
+$ openssl dhparam -out dhparam.pem 4096
 ```
 
 ## Install Docker
@@ -32,10 +32,16 @@ Instructions [here](https://www.digitalocean.com/community/tutorials/how-to-inst
 
 Use [these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
 
-## Build container
+## Build containers
 
-*NOTE*: MUST be run as a user able to run sudo *without a password*.
-
-```shell
-$ OCCUPANCY_CERT_DIR=[path to fullchain.pem and privkey.pem, e.g. "OCCUPANCY_CERT_DIR=/etc/letsencrypt/live/api.occupancyapp.com"] build-container
 ```
+$ docker-compose build
+```
+
+### Run containers
+
+```
+$ docker-compose up --detach
+```
+
+(Leave off the detach if you want to stay attached and watch logs)

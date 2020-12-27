@@ -13,9 +13,7 @@ to get a certificate assigned for that host.
 
 Open incoming connections to TCP port 80 to allow the certificate validation to pass.
 
-#### LetsEncrypt
-
-Using [these instructions](https://tecadmin.net/how-to-setup-lets-encrypt-on-ubuntu-20-04/).
+#### Obtain TLS Certificate 
 
 ```shell
 $ sudo apt-get update
@@ -24,9 +22,7 @@ $ sudo certbot certonly --non-interactive --standalone --agree-tos --email [emai
 [fully-qualified hostname, e.g. api.occupancyapp.com]
 ```
 
-Certificate and chain written to `/etc/letsencrypt/live/api.occupancyapp.com/fullchain.pem`
-
-Key file written to `/etc/letsencrypt/live/api.occupancyapp.com/privkey.pem`
+All files will be written to `/etc/letsencrypt/live/[hostname]`.
 
 #### Close HTTP Port 
 

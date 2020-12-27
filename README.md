@@ -214,7 +214,8 @@ nginx configuration to get a better score.
 #### Confirm Containers Restart Cleanly After Reboot
 
 Reboot the host running the Docker containers, and re-run the "Remote Test"
-section. Need to make sure that a
+section. Need to make sure that a reboot of the Docker host is a yawn event
+for a production service.
 
 #### Set up recurring rebuild/restart job
 

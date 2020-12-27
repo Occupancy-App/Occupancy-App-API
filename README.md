@@ -36,8 +36,12 @@ Now that the certificate was assigned, close TCP port 80 (HTTP) access to this h
 #### Create High-Quality Diffie-Helman Parameter File
 
 ```
+$ mkdir -p ~/git/Occupany-App-API/docker/reverse_proxy/crypto
+$ cd ~/git/Occupancy-App-API/docker/reverse_proxy/crypto
 $ openssl dhparam -out dhparam.pem 4096
 ```
+
+The `openssl` command will take awhile (5-10 minutes based on CPU speed from my experience).
 
 #### Install Docker
 

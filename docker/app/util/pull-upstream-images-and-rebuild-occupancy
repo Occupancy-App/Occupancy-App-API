@@ -18,4 +18,9 @@ ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} build --force-rm --no-
 ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} up --force-recreate --detach 
 
 # Remove all untagged images (old Occupancy app builds we don't need any longer)
-${DOCKER} rmi $(docker images -f 'dangling=true' -q)
+dangling_images=$(${DOCKER} images --filter 'dangling=true' --quiet)
+if ! [ -z $dangling_images ]; then
+    ${DOCKER} rmi --force ${dangling_images}
+else
+    echo "No untagged Docker images to remove"
+fi

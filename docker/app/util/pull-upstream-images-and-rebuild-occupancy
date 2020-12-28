@@ -3,6 +3,7 @@
 DOCKER_COMPOSE=/usr/local/bin/docker-compose
 HOME=/home/tdo
 OCCUPANCY_APP_DOCKER_COMPOSE_YAML=${HOME}/git/Occupancy-App-API/docker/docker-compose.yaml
+DOCKER=/usr/bin/docker
 
 # Remove any stopped containers
 ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} rm --force
@@ -13,6 +14,9 @@ ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} pull --quiet
 # Do a deep rebuild (pull upstream image and do not cache any layers) of the container
 #       we build from source
 ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} build --force-rm --no-cache --quiet
+
+# Remove all untagged images (old Occupancy app builds we don't need any longer)
+${DOCKER} rmi $(docker images -f “dangling=true” -q)
 
 # Recreate and restart all newly-rebuilt containers 
 ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} up --force-recreate --detach 

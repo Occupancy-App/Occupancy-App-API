@@ -84,11 +84,24 @@ $ id -nG
 
 `docker` should be returned in the list of groups this user is a member of.
 
-
 #### Install Docker Compose
 
-Use [these instructions](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04).
+Check the [Docker Compose Releases on GitHub](https://github.com/docker/compose/releases) to 
+determine the latest non-RC release (as of 2020-12-28, it's [1.27.4](https://github.com/docker/compose/releases/tag/1.27.4)).
 
+Update the version number in the command below to match the latest Docker Compose release.
+
+```
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+$ docker-compose --version
+```
+
+Output should be similar to:
+
+```
+docker-compose version 1.27.4, build 40524192
+```
 
 #### Automatic TLS Certificate Renewal
 

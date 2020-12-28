@@ -16,7 +16,7 @@ ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} pull --quiet
 ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} build --force-rm --no-cache --quiet
 
 # Remove all untagged images (old Occupancy app builds we don't need any longer)
-${DOCKER} rmi $(docker images -f “dangling=true” -q)
+${DOCKER} rmi $(docker images -f 'dangling=true' -q)
 
 # Recreate and restart all newly-rebuilt containers 
 ${DOCKER_COMPOSE} -f ${OCCUPANCY_APP_DOCKER_COMPOSE_YAML} up --force-recreate --detach 

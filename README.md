@@ -43,7 +43,47 @@ are 4,096 bits in size take awhile to find. :)
 
 #### Install Docker
 
-Instructions [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04).
+```
+$ sudo apt-get update
+$ sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+$ sudo apt-get update
+$ sudo apt-get -y install docker-ce
+$ sudo systemctl status docker
+```
+
+Output should be similar to:
+
+```
+
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2020-05-19 17:00:41 UTC; 17s ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 24321 (dockerd)
+      Tasks: 8
+     Memory: 46.4M
+     CGroup: /system.slice/docker.service
+             └─24321 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+```
+
+Now add this user to the `docker` group, so that they can run `docker` without needing `sudo`:
+
+```
+$ sudo usermod -aG docker ${USER}
+```
+
+Log all terminals out and log back in. Confirm that you are part of the
+`docker` group:
+
+```
+$ id -nG
+```
+
+`docker` should be returned in the list of groups this user is a member of.
+
 
 #### Install Docker Compose
 

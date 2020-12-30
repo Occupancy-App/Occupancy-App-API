@@ -25,6 +25,11 @@ class PrometheusMetrics(metaclass=Singleton):
             )
         }
 
+        # Initialize all the labels
+        self._occupancy_metrics_instruments['operation_duration_seconds'].labels(api_operation='create_space')
+
+        self._occupancy_metrics_instruments['operation_invocation_total'].labels(api_operation='create_space')
+
 
     def get_metric( self, instrument_name ):
         return self._occupancy_metrics_instruments[ instrument_name ] 

@@ -12,7 +12,9 @@ services:
     hostname: api-endpoint
     build: ./app/
     expose:
-      - "80"
+      - "8000"
+    ports:
+      - 9000:9000
     networks:
       - frontend
       - backend

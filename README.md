@@ -32,7 +32,7 @@ Now that the certificate was assigned, close TCP port 80 (HTTP) access to this h
 #### Create High-Quality Diffie-Hellman Parameter File
 
 ```
-$ mkdir -p ~/git/Occupany-App-API/docker/reverse_proxy/crypto
+$ mkdir -p ~/git/Occupancy-App-API/docker/reverse_proxy/crypto
 $ cd ~/git/Occupancy-App-API/docker/reverse_proxy/crypto
 $ openssl dhparam -out dhparam.pem 4096
 ```

@@ -1,6 +1,8 @@
 import tornado.ioloop
 import tornado.web
 import logging
+import prometheus_client
+
 from handlers.invalidurlhandler                 import InvalidUrlHandler
 from handlers.newspacehandler                   import NewSpaceHandler 
 from handlers.getspacehandler                   import GetSpaceHandler
@@ -26,7 +28,7 @@ def _make_app():
 if __name__ == "__main__":
 
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format='%(asctime)s %(levelname)-8s %(message)s',
         datefmt='%Y-%m-%d %H:%M:%SZ' )
 
@@ -34,5 +36,11 @@ if __name__ == "__main__":
     http_server = tornado.httpserver.HTTPServer( application ) 
     server_port = 8000
     http_server.listen( server_port )
-    logging.info( "Listening for connections on port {0}".format(server_port) )
+    logging.info( "Listening for client connections on port {0}".format(server_port) )
+
+    # Start Prometheus metrics port here, as starting the IOLoop blocks
+    prometheus_metrics_port=9000
+    prometheus_client.start_http_server( prometheus_metrics_port )
+    logging.info( "Exposing Prometheus metrics on port {0}".format(prometheus_metrics_port) )
+
     tornado.ioloop.IOLoop.current().start()

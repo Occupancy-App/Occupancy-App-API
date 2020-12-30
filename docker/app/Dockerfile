@@ -1,6 +1,7 @@
 FROM python:3.9-alpine 
 
-EXPOSE 8000
+# Client connections -- 8000 is client connections, 9000 is Prometheus metrics
+EXPOSE 8000 9000
 
 COPY requirements.txt /tmp
 

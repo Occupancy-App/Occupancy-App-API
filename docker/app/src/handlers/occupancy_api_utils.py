@@ -4,9 +4,8 @@ import logging
 import redis
 import datetime
 
-# TTL = 8 hours
-key_expire_value = 60 * 60 * 8
-
+# Extended TTL to 24 hours for https://github.com/Occupancy-App/Occupancy-App-API/issues/6
+key_expire_value = 60 * 60 * 24
 
 
 def get_redis_hash_by_id( db_handle, space_id ):

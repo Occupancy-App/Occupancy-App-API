@@ -45,8 +45,7 @@ class NewSpaceHandler(tornado.web.RequestHandler):
 
             now_timestamp = "{0}Z".format(datetime.datetime.utcnow().isoformat())
 
-            # TTL: 8 hours
-            ttl_seconds = 60 * 60 * 8
+            ttl_seconds = occupancy_api_utils.key_expire_value
 
             expiration_seconds_since_epoch = time.time() + ttl_seconds
 
